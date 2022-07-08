@@ -1,5 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { IVehicle } from 'App/Types/Vehicle'
+import Vehicle from 'App/Models/Vehicle'
 
 export default class VehiclesController {
     // public async index(ctx: HttpContextContract) {
@@ -20,4 +20,32 @@ export default class VehiclesController {
 
     //   return vehicles
     // }
+
+    public async store ({request, response}: HttpContextContract) {
+      const body = request.body()
+
+      const createVehicle = await Vehicle.create(body)
+
+      response.status(201)
+
+      return {
+        message: 'Carro cadastrado com sucesso!',
+        data: createVehicle,
+      }
+    }
+
+    public async index ({response}: HttpContextContract) {
+      const vehicles = await Vehicle.all()
+
+      if (!vehicles) {
+        response.status(404)
+        return {message: 'Não foi possivel localizar nenhum dos cadastros!'}
+      }
+
+      response.status(200)
+
+      return {
+        data: vehicles,
+      }
+    }
 }
