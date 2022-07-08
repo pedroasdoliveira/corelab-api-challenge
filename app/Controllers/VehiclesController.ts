@@ -48,4 +48,48 @@ export default class VehiclesController {
         data: vehicles,
       }
     }
+
+    public async show ({params, response}: HttpContextContract) {
+      const vehicle = await Vehicle.findOrFail(params.id)
+
+      if (!vehicle) {
+        response.status(404)
+
+        return {message: 'Veiculo não encontrado'}
+      }
+
+      response.status(202)
+
+      return {
+        data: vehicle,
+      }
+    }
+
+    public async update ({params, request}: HttpContextContract) {
+      const body = request.body()
+
+      const vehicle = await Vehicle.findOrFail(params.id)
+
+      vehicle.merge(body)
+
+      await vehicle.save()
+
+      return {
+        message: 'Veiculo atualizado com sucesso!',
+        data: vehicle,
+      }
+    }
+
+    public async destroy ({params, response}: HttpContextContract) {
+      const vehicle = await Vehicle.findOrFail(params.id)
+
+      await vehicle.delete();
+
+      response.status(204)
+
+      return {
+        message: 'Veiculo deletado com sucesso!',
+        data: vehicle,
+      }
+    }
 }
