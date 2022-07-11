@@ -2,94 +2,75 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Vehicle from 'App/Models/Vehicle'
 
 export default class VehiclesController {
-    // public async index(ctx: HttpContextContract) {
+  public async store({ request, response }: HttpContextContract) {
+    const body = request.body()
 
-    //   const vehicles: IVehicle[] = [
-    //     {
-    //       id: 1,
-    //       name: 'First Vehicle',
-    //       description: 'This is a description of first vehicle',
-    //       plate: 'DDT-0012',
-    //       isFavorite: false,
-    //       year: 2018,
-    //       color: '#ff00ff',
-    //       price: 22000,
-    //       createdAt: new Date()
-    //     }
-    //   ]
+    const createVehicle = await Vehicle.create(body)
 
-    //   return vehicles
-    // }
+    response.status(201)
 
-    public async store ({request, response}: HttpContextContract) {
-      const body = request.body()
+    return {
+      message: 'Carro cadastrado com sucesso!',
+      data: createVehicle,
+    }
+  }
 
-      const createVehicle = await Vehicle.create(body)
+  public async index({ response }: HttpContextContract) {
+    const vehicles = await Vehicle.all()
 
-      response.status(201)
-
-      return {
-        message: 'Carro cadastrado com sucesso!',
-        data: createVehicle,
-      }
+    if (!vehicles) {
+      response.status(404)
+      return { message: 'Não foi possivel localizar nenhum dos cadastros!' }
     }
 
-    public async index ({response}: HttpContextContract) {
-      const vehicles = await Vehicle.all()
+    response.status(200)
 
-      if (!vehicles) {
-        response.status(404)
-        return {message: 'Não foi possivel localizar nenhum dos cadastros!'}
-      }
+    return {
+      data: vehicles,
+    }
+  }
 
-      response.status(200)
+  public async show({ params, response }: HttpContextContract) {
+    const vehicle = await Vehicle.findOrFail(params.id)
 
-      return {
-        data: vehicles,
-      }
+    if (!vehicle) {
+      response.status(404)
+
+      return { message: 'Veiculo não encontrado' }
     }
 
-    public async show ({params, response}: HttpContextContract) {
-      const vehicle = await Vehicle.findOrFail(params.id)
+    response.status(202)
 
-      if (!vehicle) {
-        response.status(404)
-
-        return {message: 'Veiculo não encontrado'}
-      }
-
-      response.status(202)
-
-      return {
-        data: vehicle,
-      }
+    return {
+      data: vehicle,
     }
+  }
 
-    public async update ({params, request}: HttpContextContract) {
-      const body = request.body()
+  public async update({ params, request }: HttpContextContract) {
+    const body = request.body()
 
-      const vehicle = await Vehicle.findOrFail(params.id)
+    const vehicle = await Vehicle.findOrFail(params.id)
 
-      vehicle.merge(body)
+    vehicle.merge(body)
 
-      await vehicle.save()
+    await vehicle.save()
 
-      return {
-        message: 'Veiculo atualizado com sucesso!',
-        data: vehicle,
-      }
+    return {
+      message: 'Veiculo atualizado com sucesso!',
+      data: vehicle,
     }
+  }
 
-    public async destroy ({params, response}: HttpContextContract) {
-      const vehicle = await Vehicle.findOrFail(params.id)
+  public async destroy({ params, response }: HttpContextContract) {
+    const vehicle = await Vehicle.findOrFail(params.id)
 
-      await vehicle.delete();
+    await vehicle.delete()
 
-      response.status(204)
+    response.status(204)
 
-      return {
-        message: 'Veiculo deletado com sucesso!',
-        data: vehicle,
-      }
+    return {
+      message: 'Veiculo deletado com sucesso!',
+      data: vehicle,
     }
+  }
 }

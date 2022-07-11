@@ -6,28 +6,28 @@ export default class Vehicle extends BaseModel {
   public id: number
 
   @column()
-  public name: string;
+  public name: string
 
   @column()
-  public brand: string;
+  public brand: string
 
   @column()
-  public description: string;
+  public description: string
 
   @column()
-  public plate: string;
+  public plate: string
 
   @column()
-  public is_favorite: boolean;
+  public is_favorite: boolean
 
   @column()
-  public year: number;
+  public year: number
 
   @column()
-  public color: string;
+  public color: string
 
   @column()
-  public price: number;
+  public price: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
